@@ -1,5 +1,6 @@
 from django.core.mail import send_mail, BadHeaderError
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from Contact.forms import ContactForm
 from django.http import HttpResponse
 
@@ -27,7 +28,10 @@ def contact_view(request):
                 send_mail(subject, message, "admin@example.com", ["admin@example.com"])
             except BadHeaderError:
                 return HttpResponse("Invalid header found")
+
+            messages.success(request, "Message Sent.")
             return redirect("contact_home")
+        messages.error(request, "Error message not sent.")
 
     form = ContactForm()
     return render(request, "contact/contact.html", {"form": form})
